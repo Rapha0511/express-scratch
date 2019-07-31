@@ -1,33 +1,84 @@
-.App {
-  text-align: center;
+.App{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+
+  height: 100vh;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.listing img{
+width: 50px;
+height: 50px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+ul{
+  list-style: none;
+
+}
+
+.listing{
+  display: flex;
+  padding: 10px;
+}
+
+.listing .date{
+  font-size: 0.75rem;
+  color:#888;
+  padding: 8px 4px;
+}
+
+.listing a{
+
+  text-decoration: none;
+  
+}
+
+.listing a:hover{
+ text-decoration: underline;
+}
+
+.listing .price{
+  padding: 4px;
+
+}
+
+.listing .price span{
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 3px;
+  font-size: 0.75rem;
+  font-weight: lighter;
+}
+
+.MakeListing{
+  height: 40vh;
+  width: 100vw;
+  background-color:#ccc;
+  border-top: 2px inset black;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-around;
 }
 
-.App-link {
-  color: #61dafb;
+.MakeListing label{
+  width: 80;
+  display: flex;
+  justify-content: space-around;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.MakeListing span{
+  width: 180px
+}
+
+.MakeListing textarea{
+  resize: none;
+  height: 70px;
+  width: 250px;
+}
+
+.MakeListing input{
+  width: 250px;
 }

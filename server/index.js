@@ -21,12 +21,12 @@ id:{
 
 title:{
     type : ORM.TEXT,
-    allwNull: false,
+    allowNull: false,
 },
 
 description:{
     type : ORM.TEXT,
-    allwNull: false,
+    allowNull: false,
 },
 
 price:{
@@ -49,7 +49,7 @@ connection.authenticate()             // test the database connection
 
 
 
-app.get('hydrate',(req,res)=>{  
+app.get('/hydrate',(req,res)=>{  
     Listing.sync({force : true }) // sync = efface et creee table
         .then(()=>res.json({message:'success to create table'})) // success if it create table
         .catch(err => console.error(err)||res.status(500).json({message : 'failed to create table '})); // erreur 500 et message si il n'a pas cree les tables
@@ -57,13 +57,13 @@ app.get('hydrate',(req,res)=>{
 
 app.post('/listing',(req,res)=>{
     Listing.create(req.body) // post a js object 
-        .then((response)=>res.json(201).json({created: response.dataValues , message:'created'})) // if the object is correct the obj is create into the database
+        .then((response)=>res.status(201).json({created: response.dataValues , message:'created'})) // if the object is correct the obj is create into the database
         .catch(err => console.error(err)||res.status(500).json({message:'create listing failed'}))// else we have a 500 error that say we fucked somewhere
 
 
 });
 
-app.get('listing',(req,res)=>{
+app.get('/listing',(req,res)=>{
     Listing.findAll() // select every obj in the listing table
         .then(listings => res.json(listings)) //array with the dataValues
         .catch(err => console.error(err)||res.status(500).json({message:'read listings failed'})) //error 
