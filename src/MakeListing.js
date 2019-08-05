@@ -56,6 +56,7 @@ class MakeListing extends React.Component{
         fetch('/listing',{
             method :'POST',
             headers:{'Content-Type': 'application/json'},
+            Authorization : 'Bearer '+this.props.token, // passing the token
             body:JSON.stringify({
                 title:this.state.title,
                 description:this.state.description,
@@ -75,9 +76,11 @@ class MakeListing extends React.Component{
         })
     }
 
+
     render(){
         return(
-            <div className ={'MakeListing '+(this.state.shoWaitingGif ? 'waiting':'')}>
+            <div className ={'MakeListing '+(this.state.shoWaitingGif ? 'waiting':'')+(this.state.panelOpen ? '' : 'closed')}>
+
                 <img src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG3KS1E_BbJA5tjDFxMs7VZoj6LWRRBR1xyFZ6AxeaiG8SZWcO' />
 
                 <label>

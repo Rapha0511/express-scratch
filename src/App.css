@@ -7,6 +7,22 @@
   height: 100vh;
 }
 
+.App > div{
+  transition: height 1s;
+}
+
+.search{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 90px;
+  height: 50px;
+
+  display: flex;
+  justify-content: space-around;
+
+}
+
 .Listings{
   overflow-y: auto;
 }
@@ -19,6 +35,11 @@ height: 50px;
 ul{
   list-style: none;
 
+}
+
+.Listings{
+  height: 100%;
+  overflow-y:auto,
 }
 
 .listing{
@@ -56,8 +77,40 @@ ul{
   font-weight: lighter;
 }
 
-.MakeListing{
-  height: 40vh;
+.toggle-panel{
+  position: absolute;
+
+  top:10px;
+  right: 10px;
+  background-color: blue;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+
+  color: white;
+  text-align: center;
+  font-size: 3rem;
+
+  cursor: pointer;
+  user-select: none;
+  transform: rotate(0);
+  transition: transform 1s;
+}
+
+.toggle-panel.reversed{
+  transform: rotate(180deg);
+}
+
+.MakeListing.closed{
+  max-height: 50px
+}
+
+.MakeListing.closed .toggle-panel{
+  transform: rotate(180deg);
+}
+
+.MakeListing, .Login{
+  height: 100%;
   width: 100vw;
   background-color:#ccc;
   border-top: 2px inset black;
@@ -66,15 +119,16 @@ ul{
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  position: relative;
 }
 
-.MakeListing label{
+.MakeListing label, .Login label{
   width: 80;
   display: flex;
   justify-content: space-around;
 }
 
-.MakeListing span{
+.MakeListing label span, .Login label span{
   width: 180px
 }
 
@@ -84,7 +138,7 @@ ul{
   width: 250px;
 }
 
-.MakeListing input{
+.MakeListing input, .Login input{
   width: 250px;
 }
 
@@ -97,11 +151,11 @@ ul{
   display: none;
 }
 
-.MakeListing:not(.waiting) img{
+.MakeListing:not(.waiting) img, .Login:not(.waiting) img{
   display: none;
 }
 
-.MakeListing:not(.waiting) label,
-.MakeListing:not(.waiting) button{
+.MakeListing:not(.waiting) label, .Login:not(.waiting) label ,
+.MakeListing:not(.waiting) button, .Login:not(.waiting)button{
   display: flex;
 }
