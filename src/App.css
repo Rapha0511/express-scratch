@@ -7,7 +7,7 @@
   height: 100vh;
 }
 
-.App > div{
+.App > div:not(.toggle-panel){
   transition: height 1s;
 }
 
