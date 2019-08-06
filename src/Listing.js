@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 
 class Listings extends React.Component{
 
@@ -37,7 +37,7 @@ class Listings extends React.Component{
     render(){
         return(
             <div className ='Listings'>
-                <div class ='search'>
+                <div className ='search'>
                 <label>
                     <input value = {this.state.searchText} onChange={this.setSearchText} placeholder='look for a putain'/>
                 </label>
@@ -55,7 +55,7 @@ class Listings extends React.Component{
                 </div>
                 <ul>
 
-                    
+
            {this.props.listings
            .filter(listing=> (
                !this.state.searchText || listing.title.toLocaleLowerCase().includes(this.state.searchText.toLocaleLowerCase()) //if nothing in text keep everything or when we start tiping , it render the new state (the state is what u tipe)
@@ -73,9 +73,9 @@ class Listings extends React.Component{
            .map(listing=>(
              <li className='listing' key={listing.id}>
              <img src = {(listing.images && listing.images[0])|| "https://odis.homeaway.com/odis/listing/cfc4ee9c-216d-4b16-ade4-8e74333e52d9.c10.jpg"}/>
-             <div> 
+             <div>
               <span className='date'>{(new Date(listing.createdAt)).toString().slice(4,10).replace(' 0','')}</span>
-               <a href ='#'>{listing.title}</a>
+               <Link to={'/listing/'+listing.id}>{listing.title}</Link>
                <div className='price'>
                  <span>${listing.price}</span>
                  </div>
@@ -90,5 +90,3 @@ class Listings extends React.Component{
 }
 
 export default Listings;
-
-
