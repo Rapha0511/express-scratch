@@ -118,6 +118,10 @@ app.get('/listing',(req,res)=>{
 
 });
 
+// the :id is a parameter in the path
+// we will read the value from req.params.id
+// it will always be a string, so we will convert it to a number for our query
+// findByPk = primary Key
 app.get('/listing/:id',(req,res)=>{
     Listing.findByPk(1*req.params.id) // select one listing in the listing table by id
         .then(listing => res.json(listing)) //object with the dataValue

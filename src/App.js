@@ -51,6 +51,11 @@ class App extends React.Component{
 
   render() {
 
+
+    // Router is the Component who connects to the url of the page
+    //   he tells the browser that the browser should not make a new request
+    //                 for a new file
+    //   instead, the Router will handle the request for a new url
     return (
       <Router>
         <div className="App">
@@ -65,6 +70,18 @@ class App extends React.Component{
 
           <div className='content'>
             <div style={{height:(this.state.panelOpen ? 70 : 90)+'%'}}>
+              {/*
+                Switch: the Switch has <Route/>s as children, and will choose always
+                        ONE of the Routes to render
+
+                Route: exact means only match the path exactly
+                       path is the path in the url that has to match to render this Route
+
+                Route (component): when this Route is matched, render this Component
+                Route (render): render is a function which returns a JSX
+                                it allows us to pass data to a prop on the Component we're rendering
+                Redirect: when we didn't match any Component, redirect to /listings page
+                */}
               <Switch>
                 <Route exact path='/listings' render={()=> (
                     <Listings listings={this.state.listings}/>
@@ -75,7 +92,7 @@ class App extends React.Component{
             </div>
 
             <div style={{height:(this.state.panelOpen ? 30 : 10)+'%'}}>
-              { this.state.token?(                          // if true show the the list if not still show login
+              { this.state.token?(    // if true show the the list if not still show login
                 <MakeListing triggerReload={this.reload} token={this.state.token}/>
               ):(
                 <Login onLogin={this.setToken}/>
