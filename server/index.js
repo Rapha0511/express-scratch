@@ -50,7 +50,7 @@ author:{
     },
 }
 
-},{freezTableName: true})  // the name if fix
+},{freezeTableName: true})  // the name if fix
 
 const User = connection.define("user",{
 
@@ -69,8 +69,36 @@ const User = connection.define("user",{
         allowNull:false,
         unique:true,
     },
+    role:{
+        type:ORM.TEXT,
+        allowNull:false
+    }
 
 },{freezeTableName:true})
+
+
+
+
+const Order = connection.define('order',{
+    id:{
+        type: ORM.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+
+    listings:{
+        type:ORM.ARRAY(ORM.INTEGER),
+        
+    },
+    purchaser:{
+        type: ORM.INTEGER,
+        references:{
+            model:'user',
+            key:'id',
+        },
+    }
+
+},{freezeTableName:true })
 
 app.use(express.json()); // function that parse the request into json (is the content-type is correct)
 
@@ -88,6 +116,10 @@ const auth = (req, res, next)=>{  // next is what get u to req res
     });
   };
 
+   const adminMidlleware = (req,res,next)=>{
+       req.session.role === 'admin'? next() : res.status(403).json({message:'cannot access (admin only)'})      // if you are addmin u go to the next step  else fuck u
+   }
+
 connection.authenticate()             // test the database connection
     .then(()=>console.log('sucess'))
     .catch((err)=> console.error(err));
@@ -98,10 +130,29 @@ app.get('/hydrate',(req,res)=>{
     .then(()=>User.bulkCreate(fakeData.users)) //send fake data to the user table
     .then(()=>Listing.sync({force : true }))   // .then for calling the next lines  instead of re writing it  //if this fail it goes to the catch
     .then(()=>Listing.bulkCreate(fakeData.listing)) // send fakedata to the listings table
+    .then(()=>Order.sync({force:true}))
     .then(()=>res.json({message:'success to create table'})) // success if it create table
     .catch(err => console.error(err)||res.status(500).json({message : 'failed to create table '})); // erreur 500 et message si il n'a pas cree les tables
 
 });
+
+app.get('/chekAdmin',[auth,adminMidlleware],(req,res)=>{
+    res.json({message:'admin'})
+})
+
+app.get('/order',(req,res)=>{
+    Order.findAll()
+        .then(orders => res.json(orders))
+        .catch(err => console.error(err) || res.status(500).json({message:'read orders failed'}))
+})
+
+app.post('/order',auth,(req,res)=>{
+    Order.create({listings:req.body.listings, 
+                    purchaser:req.session.id // currest session user
+                 })
+        .then((response)=>res.status(201).json({created:response.dataValues, message:'order created'}))
+        .catch(err=>console.error(err)||res.status(500).json({message:'order failed'}))
+})
 
 app.post('/listing',auth,(req,res)=>{ // auth is checking if we are connected (auth is a fction)
     Listing.create({...req.body,author : req.session.id}) // post a js object
@@ -137,7 +188,7 @@ app.post('/user',(req,res)=>{
         email:req.body.email,
         passwordHash,
     }).then(()=>res.status(201).json({message: 'sign up succefully'}))
-      .catch(()=>res.status(500).json({message:'putain'}))
+      .catch(()=>res.status(500).json({message:'failed to create user'}))
 });
 
 app.post('/login',(req,res)=>{
@@ -146,7 +197,7 @@ app.post('/login',(req,res)=>{
         .then(userResponse=>{
             if (userResponse){ // if we found the user with the mail and password
                 jwt.sign( // turn json into an encoded shit no one can fucked
-                    { id: userResponse.dataValues.id}, // id of the user we found
+                    { id: userResponse.dataValues.id,role:userResponse.dataValues.role}, // id of the user we found
                     'jwt secret code', // need a secret code to encode
                     (err,token)=>res.json({token}) // send back  some json with the taken
                 );

@@ -40,10 +40,10 @@ module.exports = {
             title: places[Math.floor(Math.random()*places.length)] + ' ' +  houses[Math.floor(Math.random()*houses.length)],
             description:'fucked'+i,
             price: 1000+Math.floor(Math.random()*500*i),
-            images:[
-                images[Math.floor(Math.random()*images.length)],
-                images[Math.floor(Math.random()*images.length)],
-            ],
+            images:[...Array(Math.floor(Math.random()*8)+2)].map(()=>
+            images[Math.floor(Math.random()*images.length)]
+            ),
+                
             author : ( i%4 )+1,
         })),
         
@@ -51,10 +51,10 @@ module.exports = {
 
     users: [
 
-        {email: 'nik@nik.nik', passwordHash: calculateHash('guest')},
-        {email: 'raphael@raphael.nik', passwordHash:calculateHash ('guest')},
-        {email: 'putain@nik.nik', passwordHash:calculateHash ('guest')},
-        {email: 'avi@nik.nik', passwordHash:calculateHash ('guest')},
+        {email: 'nik@nik.nik', passwordHash: calculateHash('guest'),role:'admin'},
+        {email: 'raphael@raphael.nik', passwordHash:calculateHash ('guest'),role:'admin'},
+        {email: 'putain@nik.nik', passwordHash:calculateHash ('guest'),role:'user'},
+        {email: 'avi@nik.nik', passwordHash:calculateHash ('guest'),role:'user'},
 
     ],
 }

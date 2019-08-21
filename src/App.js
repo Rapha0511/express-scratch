@@ -1,10 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import MakeListing from './MakeListing.js';
 import Listings from './Listing.js'
 import Login from './Login.js';
 import ListingDetail from './ListingDetail';
+import {subscribe} from './Cart';
+import ShoppingCartIcon from './ShoppingCartIcon';
+import Checkout from './checkout'
 
 import {
   BrowserRouter as Router,
@@ -16,16 +18,43 @@ import {
 
 
 class Navbar extends React.Component {
+  
+  state ={
+    shoppingCartLength:0,
+    token:null,
+  }
+
+  componentDidMount(){
+
+    subscribe('items', items=> // items => is the callback
+    this.setState({shoppingCartLength : items.length})); // function call every time u add something on the cart
+  }
+
   render(){
     return (
       <div className='Navbar'>
         <Link to='/'>
           <h1>YAD3</h1>
         </Link>
+        <Link to='/checkout'>
+        <ShoppingCartIcon className='ShoppingCartIcon' number ={this.state.shoppingCartLength}/>
+        </Link>
       </div>
     );
   }
 };
+
+class AdminPage extends React.Component{
+  render(){
+    return(
+      <div className='AdminPage'>
+
+          nique ta pute de mere
+
+      </div>
+    );
+  }
+}
 
 
 class App extends React.Component{
@@ -33,10 +62,16 @@ class App extends React.Component{
   state={
     listings:[], // will contain all our info from the database (needs the same name as the model)
     token : null, // not logged in so the token is null
+    isAdmin:false,
+    shoppingCartLength: 0
   }
 
   componentDidMount(){ // we cannot call it multiple time
     this.reload()
+
+    subscribe('items', items=>
+    this.setState({shoppingCartLength : items.length}));
+
   }
 
   reload = ()=>fetch('/listing') // fetch request from listing
@@ -44,7 +79,14 @@ class App extends React.Component{
     .then(listings => this.setState({listings})) // put the response in the state
 
 
-    setToken = (token) => this.setState({token})
+    setToken = (token) => this.setState({token},()=>{  // set the token and see if admin or not
+      fetch ('/chekAdmin',{
+        headers:{Authorization : 'Bearer ' +token}
+      })
+      .then(({status})=>{
+        this.setState({isAdmin:status === 200})
+      })
+    })
 
     togglePanel = () =>this.setState({panelOpen: !this.state.panelOpen})
 
@@ -57,13 +99,22 @@ class App extends React.Component{
     //                 for a new file
     //   instead, the Router will handle the request for a new url
     return (
+
       <Router>
         <div className="App">
           {this.state.token ? (
             null
           ) : (
-            <Navbar />
+            <Navbar/>
           )}
+          {this.state.isAdmin ? (
+          <div className='Admin-link'>
+            <Navbar/>
+            <Link to ='/admin'>admin</Link>
+            <Link to = '/'>HOME</Link>
+          </div>
+          ) : null}
+
           <div className = {'toggle-panel '+(this.state.panelOpen? 'reversed' : '')} onClick={this.togglePanel}>
            ⌃
           </div>
@@ -87,6 +138,14 @@ class App extends React.Component{
                     <Listings listings={this.state.listings}/>
                   )}/>
                 <Route exact path='/listing/:id' component={ListingDetail} />
+                <Route exact path='/checkout' render={()=>(
+                    <Checkout token={this.state.token}/>
+                )}/>
+
+                {this.state.isAdmin ?(
+                  <Route exact path='/admin' component ={AdminPage}/>
+                ):null}
+
                 <Redirect from='/' to='/listings'/>
               </Switch>
             </div>
